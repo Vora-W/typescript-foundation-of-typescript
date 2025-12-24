@@ -1,4 +1,4 @@
-const orders: Order[] = [
+const ordersSample: Order[] = [
   {
     orderId: "ORD001",
     status: "pending",
@@ -109,14 +109,28 @@ const totalByStatusWithDiscount = (
   orders: Order[],
   targetStatus: OrderStatus
 ): number => {
-  return orders
-    .filter((order) => order.status === targetStatus)
-    .reduce(
-      (acc, order) =>
-        (acc += order.price * order.quantity - (order.discount ?? 0)),
-      0
-    );
+  const validateStatuses: OrderStatus[] = [
+    "pending",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
+  if (!validateStatuses.includes(targetStatus)) {
+    console.log(`Warning: Invalid status '${targetStatus}'. Returning 0.`);
+    return 0;
+  }
+  let total = 0;
+  for (const order of orders) {
+    if (order.status === targetStatus) {
+      const discount = order.discount ?? 0;
+      const netPrice = order.price * order.quantity - discount;
+      total += netPrice;
+    }
+  }
+  return total;
 };
+
+const orders: Array<Order> = ordersSample;
 
 const totalShipped = totalByStatusWithDiscount(orders, "shipped");
 console.log("Total for shipped orders with discount:", totalShipped);
