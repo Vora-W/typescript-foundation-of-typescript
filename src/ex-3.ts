@@ -1,4 +1,4 @@
-const ordersSample:Order[] = [
+const ordersSample: Order[] = [
   {
     orderId: "ORD001",
     status: "pending",
@@ -105,10 +105,13 @@ type Order = {
   discount?: number;
 }
 
-function totalByStatusWithDiscount (orders:Order[], targetStatus: OrderStatus) {
-  
+function totalByStatusWithDiscount(orders: Order[], targetStatus: OrderStatus): number {
+  return orders
+    .filter((order) => order.status === targetStatus)
+    .reduce((acc, currOrder) => acc + ((currOrder.price * currOrder.quantity) - (currOrder.discount ?? 0)), 0)
 }
 
+const orders: Order[] = ordersSample;
 
 const totalShipped = totalByStatusWithDiscount(orders, "shipped");
 console.log("Total for shipped orders with discount:", totalShipped);
